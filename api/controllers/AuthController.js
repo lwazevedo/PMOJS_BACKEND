@@ -15,6 +15,7 @@ module.exports = {
    * @param res
    */
   signin(req, res) {
+    //console.log(passport.authenticate('local', _.partial(sails.config.passport.onPassportAuth, req, res))(req, res));
     passport.authenticate('local', _.partial(sails.config.passport.onPassportAuth, req, res))(req, res);
   },
 
@@ -29,7 +30,7 @@ module.exports = {
     User
       .create(values)
       .then(user => {
-        return {token: CipherService.jwt.encodeSync({id: user.id}), user: user}
+        return { token: CipherService.jwt.encodeSync({ id: user.id }), user: user }
       })
       .then(res.created)
       .catch(res.negotiate);
@@ -45,7 +46,7 @@ module.exports = {
     const strategyName = [type, 'token'].join('-');
 
     if (Object.keys(passport._strategies).indexOf(strategyName) === -1) {
-      return res.badRequest(null, {message: [type, ' is not supported'].join('')});
+      return res.badRequest(null, { message: [type, ' is not supported'].join('') });
     }
 
     passport.authenticate('jwt', (error, user, info) => {
@@ -60,12 +61,12 @@ module.exports = {
    * @param res
    */
   refresh_token(req, res) {
-    if (!req.param('token')) return res.badRequest(null, {message: 'You must provide token parameter'});
+    if (!req.param('token')) return res.badRequest(null, { message: 'You must provide token parameter' });
 
     const oldDecoded = CipherService.jwt.decodeSync(req.param('token'));
 
     res.ok({
-      token: CipherService.jwt.encodeSync({id: oldDecoded.id})
+      token: CipherService.jwt.encodeSync({ id: oldDecoded.id })
     });
   }
 };

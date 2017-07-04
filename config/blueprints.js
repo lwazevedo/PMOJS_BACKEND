@@ -36,7 +36,7 @@ module.exports = {
      * Shortcut routes are simple helpers to provide access to a controller's CRUD methods from your browser's URL bar
      * @type {Boolean}
      */
-    shortcuts: false,
+    shortcuts: true,
 
     /**
      * An optional mount path for all blueprint routes on a controller, including `rest`, `actions`, and `shortcuts`
@@ -61,7 +61,7 @@ module.exports = {
      * from other models which are linked by associations
      * @type {Boolean}
      */
-    populate: false,
+    populate: true,
 
     /**
      * Whether to run Model.watch() in the find and findOne blueprint actions

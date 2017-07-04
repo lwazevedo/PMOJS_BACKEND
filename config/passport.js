@@ -45,8 +45,9 @@ const LOCAL_STRATEGY_CONFIG = {
  */
 const JWT_STRATEGY_CONFIG = {
   secretOrKey: 'DEFAULT_SECRET_KEY',
-  jwtFromRequest: ExtractJwt.versionOneCompatibility({authScheme: 'Bearer', tokenBodyField: 'access_token'}),
+  jwtFromRequest: ExtractJwt.versionOneCompatibility({ tokenBodyField: 'access_token' }),
   tokenQueryParameterName: 'access_token',
+  authScheme: 'Bearer',
   session: false,
   passReqToCallback: true
 };
@@ -73,8 +74,11 @@ const SOCIAL_STRATEGY_CONFIG = {
  * @private
  */
 const _onLocalStrategyAuth = (req, username, password, next) => {
+
   User
-    .findOne({[LOCAL_STRATEGY_CONFIG.usernameField]: username})
+    .findOne({
+      [LOCAL_STRATEGY_CONFIG.usernameField]: username
+    })
     .then(user => {
       if (!user) return next(null, null, sails.config.errors.USER_NOT_FOUND);
       if (!HashService.bcrypt.compareSync(password, user.password)) return next(null, null, sails.config.errors.USER_NOT_FOUND);
@@ -92,7 +96,7 @@ const _onLocalStrategyAuth = (req, username, password, next) => {
  */
 const _onJwtStrategyAuth = (req, payload, next) => {
   User
-    .findOne({id: payload.id})
+    .findOne({ id: payload.id })
     .then(user => {
       if (!user) return next(null, null, sails.config.errors.USER_NOT_FOUND);
       return next(null, user, {});
@@ -151,29 +155,18 @@ module.exports = {
      */
     onPassportAuth(req, res, error, user, info) {
       if (error || !user) return res.negotiate(error || info);
-
-      return res.ok({
-        token: CipherService.jwt.encodeSync({id: user.id}),
-        user: user
-      });
+      var response = {
+          token: CipherService.jwt.encodeSync({
+            id: user.id
+          }),
+          user: user
+        }
+        //req.session.authenticated = true;
+      req.session.user = user.id;
+      return res.ok(response);
     }
   }
 };
 
 passport.use(new LocalStrategy(_.assign({}, LOCAL_STRATEGY_CONFIG), _onLocalStrategyAuth));
 passport.use(new JwtStrategy(_.assign({}, JWT_STRATEGY_CONFIG), _onJwtStrategyAuth));
-passport.use(new FacebookTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new TwitterTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new VKontakteTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new FoursquareTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new GitHubTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new InstagramTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new PayPalTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new RedditTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new SoundCloudTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new WindowsLiveTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new TwitchTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new YandexTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new AmazonTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new GooglePlusTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));
-passport.use(new YahooTokenStrategy(_.assign({}, SOCIAL_STRATEGY_CONFIG), _onSocialStrategyAuth));

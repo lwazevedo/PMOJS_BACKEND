@@ -34,7 +34,7 @@ module.exports = {
      *
      * @type {Object|Boolean}
      */
-    serverOptions: undefined,
+    //serverOptions: undefined,
 
     /**
      * You can define own custom middleware here
@@ -53,7 +53,7 @@ module.exports = {
      *
      * @type {Function|Boolean|Object}
      */
-    bodyParser: undefined,
+    //bodyParser: undefined,
 
     /**
      * Express middleware to use for every Sails request
@@ -73,11 +73,18 @@ module.exports = {
        * @type {Array}
        */
       order: [
-        'compress',
-        'keepAlive',
+        'startRequestTimer',
+        'cookieParser',
+        'session',
+        'myRequestLogger',
         'bodyParser',
-        '$custom',
+        'handleBodyParserError',
+        'compress',
+        'methodOverride',
+        'poweredBy',
         'router',
+        'www',
+        'favicon',
         '404',
         '500'
       ]

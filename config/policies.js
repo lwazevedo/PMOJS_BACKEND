@@ -13,10 +13,12 @@
 
 module.exports = {
   policies: {
-    '*': ['isAuthenticated'],
+    '*': [
+      'sessionAuth'
+    ],
 
     AuthController: {
       '*': true
-    }
+    },
   }
 };
