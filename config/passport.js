@@ -156,12 +156,15 @@ module.exports = {
     onPassportAuth(req, res, error, user, info) {
       if (error || !user) return res.negotiate(error || info);
       var response = {
-          token: CipherService.jwt.encodeSync({
-            id: user.id
-          }),
-          user: user
-        }
-        //req.session.authenticated = true;
+        token: CipherService.jwt.encodeSync({
+          id: user.id
+        }),
+        user: user
+      }
+      if (_.isUndefined(req.session)) {
+        req.session = {}
+      }
+      req.session.authenticated = true;
       req.session.user = user.id;
       return res.ok(response);
     }
