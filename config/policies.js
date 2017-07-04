@@ -14,7 +14,7 @@
 module.exports = {
   policies: {
     '*': [
-      'sessionAuth'
+      'isAuthenticated'
     ],
 
     AuthController: {

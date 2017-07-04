@@ -45,9 +45,8 @@ const LOCAL_STRATEGY_CONFIG = {
  */
 const JWT_STRATEGY_CONFIG = {
   secretOrKey: 'DEFAULT_SECRET_KEY',
-  jwtFromRequest: ExtractJwt.versionOneCompatibility({ tokenBodyField: 'access_token' }),
+  jwtFromRequest: ExtractJwt.versionOneCompatibility({ authScheme: 'Bearer', tokenBodyField: 'access_token' }),
   tokenQueryParameterName: 'access_token',
-  authScheme: 'Bearer',
   session: false,
   passReqToCallback: true
 };
@@ -155,18 +154,12 @@ module.exports = {
      */
     onPassportAuth(req, res, error, user, info) {
       if (error || !user) return res.negotiate(error || info);
-      var response = {
+      return res.ok({
         token: CipherService.jwt.encodeSync({
           id: user.id
         }),
         user: user
-      }
-      if (_.isUndefined(req.session)) {
-        req.session = {}
-      }
-      req.session.authenticated = true;
-      req.session.user = user.id;
-      return res.ok(response);
+      });
     }
   }
 };
