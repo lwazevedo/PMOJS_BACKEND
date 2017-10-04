@@ -1,7 +1,7 @@
-# PMOJS_BACKEND
+# pmojs_back_end
 
 ## Descrição:
-Disponibilizar dados através de uma api para o projeto PMOJS_FRONTEND.
+Disponibilizar dados através de uma api para o projeto pmojs_frontend (Em stand-by).
 
 ## Features
 * <a href="https://github.com/ghaiklor/generator-sails-rest-api" target="_blank">Sails Rest Api</a>
